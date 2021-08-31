@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TempTracker</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <h1 class="title">Temp Tracker</h1>
+    <div class="add--form">
+        <form>
+            <div class="input--temp">
+                <label>New temp</label>
+                <input type="number" id="value--add--temp">
+            </div>
+            <button type="button" id="add-btn">
+                Add Temp
+            </button>
+        </form>
+    </div>
+    <!-- section max -->
+    <div class="max--item--section">
+        <h1 id="max--temp--title"></h1>
+        <button id="get--max--btn">Get Max Temp</button>
+    </div>
+    <!-- section min -->
+    <div class="min--item--section">
+        <h1 id="min--temp--title"></h1>
+        <button id="get--min--btn">Get Min Temp</button>
+    </div>
+
+    <!-- section avg -->
+    <div class="avg--item--section">
+        <h1 id="avg--temp--title"></h1>
+        <button id="get--avg--btn">Get Avg Temp</button>
+    </div>
+
+    <script>
+        document.getElementById('add-btn').addEventListener('click', () => {
+            const addTempInp = document.getElementById('value--add--temp');
+            const val = addTempInp.value;
+            if (!!+val.length) {
+                fetch('http://localhost:3000/add-temp', {
+                    method: "POST",
+                    body: JSON.stringify({ temp: +val })
+                })
+                .then(resp => resp.json())
+                .then(res => addTempInp.value = "")
+            }
+        });
+        
+        // get max temp
+        document.getElementById("get--max--btn").addEventListener('click', () => {
+            fetch('http://localhost:3000/max-temp', {
+                method: "GET"
+            })
+            .then(res => res.json())
+            .then((res) => {
+                const { max } = res;
+                const maxTitle = document.getElementById('max--temp--title');
+                maxTitle.innerHTML = `Max Temp: ${max}`
+            })
+        });
+
+        // get min temp
+        document.getElementById("get--min--btn").addEventListener('click', () => {
+            fetch('http://localhost:3000/min-temp', {
+                method: "GET"
+            })
+            .then(res => res.json())
+            .then((res) => {
+                const { min } = res;
+                const minTitle = document.getElementById('min--temp--title');
+                minTitle.innerHTML = `Min Temp: ${min}`
+            })
+        });
+
+        // get avg temp
+        document.getElementById("get--avg--btn").addEventListener('click', () => {
+            fetch('http://localhost:3000/avg-temp', {
+                method: "GET"
+            })
+            .then(res => res.json())
+            .then((res) => {
+                const { avg } = res;
+                const avgTitle = document.getElementById('avg--temp--title');
+                avgTitle.innerHTML = `Avg Temp: ${avg}`
+            })
+        })
+    </script>
+</body>
+</html>
